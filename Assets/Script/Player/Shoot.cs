@@ -115,9 +115,9 @@ public class Shoot : MonoBehaviour
     }
 
     // Fungsi untuk mereset tembakan
-    // void ResetShoot()
-    // {
-    //     canShoot = true;  // Mengaktifkan kembali tembakan setelah 1 detik
-    //     lineRenderer.enabled = true;  // Mengaktifkan kembali LineRenderer
-    // }
+    void ResetShoot()
+    {
+        canShoot = true;  // Mengaktifkan kembali tembakan setelah 1 detik
+        lineRenderer.enabled = true;  // Mengaktifkan kembali LineRenderer
+    }
 }
