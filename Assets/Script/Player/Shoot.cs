@@ -10,6 +10,33 @@ public class Shoot : MonoBehaviour
     public float bulletSpeed = 10f;  // Kecepatan peluru
 
     private bool canShoot = true;  // Menandakan apakah tembakan masih diizinkan
+    private LineRenderer lineRenderer;  // LineRenderer untuk melacak arah tembakan
+
+    void Start()
+    {
+        // Pastikan shootPoint di-assign dengan benar
+        if (shootPoint == null)
+        {
+            Debug.LogError("ShootPoint is not assigned in the Inspector!");
+        }
+
+        // Menambahkan komponen LineRenderer jika belum ada
+        lineRenderer = gameObject.GetComponent<LineRenderer>();
+        if (lineRenderer == null)
+        {
+            lineRenderer = gameObject.AddComponent<LineRenderer>();  // Tambahkan LineRenderer jika belum ada
+        }
+
+        lineRenderer.startWidth = 0.1f;  // Lebar garis di awal
+        lineRenderer.endWidth = 0.1f;    // Lebar garis di akhir
+        lineRenderer.material = new Material(Shader.Find("Sprites/Default"));  // Material standar untuk garis
+        lineRenderer.startColor = Color.red;  // Warna garis di awal
+        lineRenderer.endColor = Color.red;    // Warna garis di akhir
+        lineRenderer.positionCount = 2;  // Jumlah titik garis (start dan end)
+
+        // Menonaktifkan LineRenderer di awal
+        lineRenderer.enabled = true;
+    }
 
     void Update()
     {
@@ -21,6 +48,12 @@ public class Shoot : MonoBehaviour
         {
             ShootBullet();
             canShoot = false;  // Menonaktifkan tembakan setelah tembakan pertama
+        }
+
+        // Update garis yang menunjukkan arah tembakan jika peluru belum ditembakkan
+        if (canShoot)
+        {
+            UpdateLineRenderer();
         }
     }
 
@@ -42,6 +75,9 @@ public class Shoot : MonoBehaviour
 
     void ShootBullet()
     {
+        // Cegah tembakan lebih dari sekali
+        canShoot = false;
+
         // Buat peluru di posisi shootPoint
         GameObject bullet = Instantiate(bulletPrefab, shootPoint.position, shootPoint.rotation);
 
@@ -54,7 +90,34 @@ public class Shoot : MonoBehaviour
             rb.velocity = shootPoint.up * bulletSpeed;
         }
 
-        // Hancurkan peluru setelah beberapa detik (misalnya, 2 detik)
+        // Menonaktifkan LineRenderer setelah peluru ditembakkan
+        lineRenderer.enabled = false;
+
+        // Hancurkan peluru setelah beberapa detik
         Destroy(bullet, 20f);  // Ubah durasi sesuai kebutuhan
+
+        // Setelah peluru dihancurkan, reset status tembakan agar bisa menembak lagi
+        Invoke("ResetShoot", 1f);  // Tunggu 1 detik dan aktifkan kembali tembakan
     }
+
+    void UpdateLineRenderer()
+    {
+        // Cek jika shootPoint dan lineRenderer sudah benar
+        if (shootPoint != null && lineRenderer != null)
+        {
+            // Tentukan posisi awal garis (titik tembak)
+            lineRenderer.SetPosition(0, shootPoint.position);
+
+            // Tentukan posisi akhir garis (arah tembakan, panjang garis tergantung dari seberapa jauh garis ingin ditampilkan)
+            Vector3 endPosition = shootPoint.position + shootPoint.up * 10f;  // Panjang garis 10 unit (sesuaikan sesuai kebutuhan)
+            lineRenderer.SetPosition(1, endPosition);
+        }
+    }
+
+    // Fungsi untuk mereset tembakan
+    // void ResetShoot()
+    // {
+    //     canShoot = true;  // Mengaktifkan kembali tembakan setelah 1 detik
+    //     lineRenderer.enabled = true;  // Mengaktifkan kembali LineRenderer
+    // }
 }

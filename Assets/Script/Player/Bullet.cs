@@ -6,7 +6,7 @@ public class Bullet : MonoBehaviour
 {
     public float bulletSpeed = 10f;  // Kecepatan peluru
     private Rigidbody2D rb;  // Rigidbody2D peluru untuk menggerakkan peluru
-    private bool hasBounced = false;  // Untuk mengecek apakah peluru sudah memantul atau belum
+    public float damage = 10f;  // Damage yang diberikan oleh peluru
 
     void Start()
     {
@@ -15,25 +15,22 @@ public class Bullet : MonoBehaviour
 
         // Menggerakkan peluru sesuai arah tembakan
         rb.velocity = transform.up * bulletSpeed;
+
+        // Menghancurkan peluru setelah 6 detik
+        Destroy(gameObject, 15f);  // Hancurkan peluru setelah 6 detik
     }
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        // Mengecek apakah peluru mengenai objek dengan tag "Wall"
-        if (collision.gameObject.CompareTag("Wall"))
+        // Mengecek apakah peluru mengenai objek dengan tag "Enemy"
+        if (collision.gameObject.CompareTag("Enemy"))
         {
-            // Mengatur peluru untuk memantul dengan memodifikasi arah kecepatannya
-            Vector2 reflectDirection = Vector2.Reflect(rb.velocity.normalized, collision.contacts[0].normal);
-            rb.velocity = reflectDirection * bulletSpeed;  // Memantulkan peluru sesuai dengan kecepatan awal
-
-            // Menandai bahwa peluru sudah memantul
-            hasBounced = true;
-        }
-
-        // Jika peluru sudah memantul, lakukan tindakan lebih lanjut (misalnya menghancurkan peluru setelah beberapa detik)
-        if (hasBounced)
-        {
-            Destroy(gameObject, 2f);  // Menghancurkan peluru setelah beberapa detik setelah memantul
+            // Mengurangi health musuh
+            EnemyHealth enemyHealth = collision.gameObject.GetComponent<EnemyHealth>();
+            if (enemyHealth != null)
+            {
+                enemyHealth.TakeDamage(damage);  // Mengurangi kesehatan musuh
+            }
         }
     }
 }
