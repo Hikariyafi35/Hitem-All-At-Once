@@ -8,6 +8,7 @@ public class Bullet : MonoBehaviour
     private Rigidbody2D rb;  // Rigidbody2D peluru untuk menggerakkan peluru
     public float damage = 10f;  // Damage yang diberikan oleh peluru
     private GameManager gameManager;  // Reference ke GameManager   
+    private bool isActive = true;
 
     void Start()
     {
@@ -18,19 +19,19 @@ public class Bullet : MonoBehaviour
         // Menggerakkan peluru sesuai arah tembakan
         rb.velocity = transform.up * bulletSpeed;
 
-        
+
     }
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        // Mengecek apakah peluru mengenai objek dengan tag "Enemy"
+        if (!isActive) return; // Tidak aktif? Jangan deteksi tabrakan
+
         if (collision.gameObject.CompareTag("Enemy"))
         {
-            // Mengurangi health musuh
             EnemyHealth enemyHealth = collision.gameObject.GetComponent<EnemyHealth>();
             if (enemyHealth != null)
             {
-                enemyHealth.TakeDamage(damage);  // Mengurangi kesehatan musuh
+                enemyHealth.TakeDamage(damage);
             }
         }
     }
@@ -57,17 +58,38 @@ public class Bullet : MonoBehaviour
     // Fungsi untuk membuat peluru baru
     void CreateBullet(Vector2 direction)
     {
-        // Membuat peluru baru dari prefab
         GameObject newBullet = Instantiate(gameObject, transform.position, transform.rotation);
 
-        // Menetapkan tag yang berbeda pada peluru clone
-        newBullet.tag = "CloneBullet";  // Berikan tag yang berbeda agar tidak terhitung dalam perhitungan GameManager
+        newBullet.tag = "CloneBullet";
 
-        // Mendapatkan Rigidbody2D peluru baru dan mengaturnya ke arah yang berbeda
         Rigidbody2D newRb = newBullet.GetComponent<Rigidbody2D>();
         if (newRb != null)
         {
-            newRb.velocity = direction * bulletSpeed;  // Menentukan kecepatan dan arah peluru baru
+            newRb.velocity = direction * bulletSpeed;
         }
+
+        // Nonaktifkan collider sesaat untuk menghindari trigger overlap
+        newBullet.GetComponent<Bullet>().StartCoroutine(newBullet.GetComponent<Bullet>().DelayedActivate());
+    }
+    public IEnumerator DelayedActivate()
+    {
+        isActive = false;
+        yield return new WaitForSeconds(0.05f); // Delay 50ms
+        isActive = true;
+    }
+    public void IncreaseSize(float multiplier)
+    {
+        transform.localScale *= multiplier;
+    }
+    public void IncreaseSizeTemporary(float multiplier, float duration)
+    {
+        StartCoroutine(SizeBuffRoutine(multiplier, duration));
+    }
+
+    private IEnumerator SizeBuffRoutine(float multiplier, float duration)
+    {
+        transform.localScale *= multiplier;
+        yield return new WaitForSeconds(duration);
+        transform.localScale /= multiplier;  // Kembali ke ukuran semula
     }
 }

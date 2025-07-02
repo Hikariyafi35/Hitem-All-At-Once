@@ -8,7 +8,8 @@ public class Buff : MonoBehaviour
     {
         Clone,  // Buff untuk membagi peluru menjadi beberapa
         Speed,  // Buff untuk meningkatkan kecepatan peluru
-        Damage  // Buff untuk meningkatkan damage peluru
+        Damage,  // Buff untuk meningkatkan damage peluru
+        Size
     }
 
     public BuffType buffType;  // Tipe buff yang akan diterapkan
@@ -39,6 +40,9 @@ public class Buff : MonoBehaviour
                 break;
             case BuffType.Damage:
                 bullet.damage *= 2;  // Meningkatkan damage peluru
+                break;
+            case BuffType.Size:
+                bullet.IncreaseSize(10f);  // Memperbesar ukuran peluru
                 break;
         }
     }

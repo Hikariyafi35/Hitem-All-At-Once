@@ -60,13 +60,19 @@ public class GameManager : MonoBehaviour
     // Fungsi untuk menghancurkan semua peluru yang ada di game
     void DestroyAllBullets()
     {
-        // Mencari semua objek peluru yang ada di scene dengan tag "Bullet"
-        GameObject[] bullets = GameObject.FindGameObjectsWithTag("Bullet");
+        // Mencari semua objek peluru yang ada di scene dengan tag "Bullet" atau "CloneBullet"
+        GameObject[] bullets = GameObject.FindGameObjectsWithTag("Bullet");  // Peluru asli
+        GameObject[] cloneBullets = GameObject.FindGameObjectsWithTag("CloneBullet");  // Peluru clone
 
         // Menghancurkan setiap peluru
         foreach (GameObject bullet in bullets)
         {
-            Destroy(bullet);  // Menghancurkan peluru
+            Destroy(bullet);  // Menghancurkan peluru asli
+        }
+
+        foreach (GameObject cloneBullet in cloneBullets)
+        {
+            Destroy(cloneBullet);  // Menghancurkan peluru clone
         }
     }
 
@@ -75,6 +81,9 @@ public class GameManager : MonoBehaviour
     {
         loseCanvas.SetActive(true);  // Menampilkan Canvas Lose
         loseText.text = "You Lose!";  // Menampilkan teks "You Lose"
+
+        // Menghancurkan semua peluru yang ada di game
+        DestroyAllBullets();
     }
 
     // Fungsi untuk memperbarui teks jumlah musuh yang tersisa

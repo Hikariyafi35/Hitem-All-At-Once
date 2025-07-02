@@ -5,7 +5,7 @@ using UnityEngine;
 public class EnemyHealth : MonoBehaviour
 {
     public float health = 100f;  // Kesehatan musuh
-
+    private bool recentlyHit = false;
     private GameManager gameManager;
 
     void Start()
@@ -17,13 +17,21 @@ public class EnemyHealth : MonoBehaviour
     // Fungsi untuk mengurangi kesehatan musuh
     public void TakeDamage(float damage)
     {
-        health -= damage;  // Mengurangi kesehatan musuh
+        if (recentlyHit) return;
 
-        // Jika kesehatan musuh <= 0, hancurkan musuh dan beri tahu GameManager
+        health -= damage;
+        recentlyHit = true;
+        StartCoroutine(ResetHit());
+        
         if (health <= 0)
         {
             Die();
         }
+    }
+    IEnumerator ResetHit()
+    {
+        yield return new WaitForSeconds(0.05f);
+        recentlyHit = false;
     }
 
     void Die()
