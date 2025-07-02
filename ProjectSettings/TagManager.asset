@@ -8,6 +8,9 @@ TagManager:
   - Enemy
   - GameManager
   - OutOfBounds
+  - Buff
+  - Bullet
+  - CloneBullet
   layers:
   - Default
   - TransparentFX

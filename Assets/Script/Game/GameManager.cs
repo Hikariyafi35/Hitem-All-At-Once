@@ -11,7 +11,6 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI loseText;  // TextMesh Pro untuk teks lose
     public GameObject loseCanvas;  // Canvas untuk menampilkan lose UI
 
-
     private int totalEnemies;  // Jumlah total musuh yang ada
     private int currentEnemies;  // Jumlah musuh yang masih hidup
 
@@ -53,7 +52,25 @@ public class GameManager : MonoBehaviour
     {
         winCanvas.SetActive(true);  // Menampilkan Canvas Win
         winText.text = "You Win!";  // Menampilkan teks "You Win"
+
+        // Menghancurkan semua peluru yang ada di game
+        DestroyAllBullets();
     }
+
+    // Fungsi untuk menghancurkan semua peluru yang ada di game
+    void DestroyAllBullets()
+    {
+        // Mencari semua objek peluru yang ada di scene dengan tag "Bullet"
+        GameObject[] bullets = GameObject.FindGameObjectsWithTag("Bullet");
+
+        // Menghancurkan setiap peluru
+        foreach (GameObject bullet in bullets)
+        {
+            Destroy(bullet);  // Menghancurkan peluru
+        }
+    }
+
+    // Fungsi untuk menampilkan UI Lose
     public void LoseGame()
     {
         loseCanvas.SetActive(true);  // Menampilkan Canvas Lose
