@@ -7,12 +7,14 @@ public class Bullet : MonoBehaviour
     public float bulletSpeed = 10f;  // Kecepatan peluru
     private Rigidbody2D rb;  // Rigidbody2D peluru untuk menggerakkan peluru
     public float damage = 10f;  // Damage yang diberikan oleh peluru
+    private GameManager gameManager;  // Reference ke GameManager   
 
     void Start()
     {
         // Mendapatkan Rigidbody2D peluru
         rb = GetComponent<Rigidbody2D>();
-
+        // Mendapatkan reference ke GameManager
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         // Menggerakkan peluru sesuai arah tembakan
         rb.velocity = transform.up * bulletSpeed;
 
@@ -31,6 +33,15 @@ public class Bullet : MonoBehaviour
             {
                 enemyHealth.TakeDamage(damage);  // Mengurangi kesehatan musuh
             }
+        }
+    }
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        
+        if (other.CompareTag("OutOfBounds")) 
+        {
+            gameManager.LoseGame();
+            Destroy(gameObject);
         }
     }
 }

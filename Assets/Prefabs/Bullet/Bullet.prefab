@@ -162,4 +162,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bulletSpeed: 15
-  bulletDestroy: 6
+  bulletPrefab: {fileID: 8731040535053369912}
+  damage: 10
