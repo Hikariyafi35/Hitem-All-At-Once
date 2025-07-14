@@ -6,40 +6,42 @@ public class CameraController : MonoBehaviour
 {
     public float scrollSpeed = 10f;        // Seberapa cepat kamera merespons scroll
     public float smoothTime = 0.2f;        // Seberapa licin pergerakan kamera
-    public float minX = -20f;              // Batas kiri
-    public float maxX = 100f;              // Batas kanan
+    public Transform leftBoundary;         // Referensi ke Empty GameObject untuk batas kiri
+    public Transform rightBoundary;        // Referensi ke Empty GameObject untuk batas kanan
 
-    private Vector3 velocity = Vector3.zero;
-    private Vector3 targetPosition;
-    private Vector3 defaultPosition;
+    private Vector3 velocity = Vector3.zero; // Untuk pergerakan licin
+    private Vector3 targetPosition;          // Target posisi kamera
+    private Vector3 defaultPosition;         // Posisi default kamera
 
     void Start()
     {
-        defaultPosition = new Vector3(0f, 0f, -10f);
+        //Cursor.visible = false;
+        
+        // Set posisi default kamera
+        defaultPosition = new Vector3(0f, 0f, -10f); // Posisi default pada sumbu X, Y, Z
         targetPosition = transform.position;
     }
 
     void Update()
     {
-        float scroll = Input.GetAxis("Mouse ScrollWheel");
+        float scroll = Input.GetAxis("Mouse ScrollWheel");  // Dapatkan input scroll mouse
 
-        // Ubah target posisi berdasarkan scroll input
+        // Ubah posisi target berdasarkan scroll input
         if (scroll != 0f)
         {
-            targetPosition += Vector3.right * scroll * scrollSpeed;
+            targetPosition += Vector3.right * scroll * scrollSpeed;  // Gerakkan kamera hanya di sumbu X
         }
 
         // Reset posisi kamera jika middle mouse ditekan
         if (Input.GetMouseButtonDown(2))
         {
-            targetPosition = defaultPosition;
+            targetPosition = defaultPosition; // Kembalikan ke posisi default
         }
 
-        // Batasi posisi X target agar tidak melewati batas
-        targetPosition.x = Mathf.Clamp(targetPosition.x, minX, maxX);
+        // Batasi posisi target kamera hanya pada sumbu X menggunakan referensi Empty GameObject
+        targetPosition.x = Mathf.Clamp(targetPosition.x, leftBoundary.position.x, rightBoundary.position.x);  // Pembatasan horizontal (X)
 
-        // Gerakkan kamera secara halus ke target posisi
+        // Gerakkan kamera secara halus menuju target
         transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref velocity, smoothTime);
     }
 }
-

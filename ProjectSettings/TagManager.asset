@@ -48,3 +48,36 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: 0
+    uniqueID: 935374751
+    locked: 0
+  - name: Grass BG
+    uniqueID: 3044593499
+    locked: 0
+  - name: Fence
+    uniqueID: 724142285
+    locked: 0
+  - name: Grass
+    uniqueID: 1451920177
+    locked: 0
+  - name: Pillar and Ground1
+    uniqueID: 810880241
+    locked: 0
+  - name: Pillar and Ground
+    uniqueID: 2630007521
+    locked: 0
+  - name: Enemy
+    uniqueID: 2702189149
+    locked: 0
+  - name: Bullet
+    uniqueID: 2710466045
+    locked: 0
+  - name: Player
+    uniqueID: 3721766237
+    locked: 0
+  - name: Player2
+    uniqueID: 4150825417
+    locked: 0
+  - name: Background
+    uniqueID: 1376766385
+    locked: 0

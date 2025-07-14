@@ -9,6 +9,12 @@ public class Bullet : MonoBehaviour
     public float damage = 10f;  // Damage yang diberikan oleh peluru
     private GameManager gameManager;  // Reference ke GameManager   
     private bool isActive = true;
+    private bool hasMagnetEffect = false;  // Untuk mengecek apakah magnet aktif
+    public float magnetRadius = 5f;  // Radius efek magnet
+    public float magnetStrength = 0.2f;  // Kekuatan magnet
+    public float magnetDuration = 3f;  // Durasi magnet aktif
+
+
 
     void Start()
     {
@@ -44,6 +50,56 @@ public class Bullet : MonoBehaviour
             Destroy(gameObject);
         }
     }
+    public void EnableMagnet(bool enable, float duration)
+    {
+        hasMagnetEffect = enable;
+        if (enable)
+        {
+            StartCoroutine(MagnetTimer(duration));  // Mulai timer untuk durasi magnet
+        }
+    }
+
+    // Coroutine untuk mengatur durasi efek magnet
+    private IEnumerator MagnetTimer(float duration)
+    {
+        // Tunggu selama durasi efek magnet
+        yield return new WaitForSeconds(duration);
+
+        // Nonaktifkan magnet setelah durasi habis
+        hasMagnetEffect = false;
+    }
+
+    void Update()
+    {
+        // Jika efek magnet aktif, tarik musuh di sekitar peluru
+        if (hasMagnetEffect)
+        {
+            ApplyMagnetEffect();
+        }
+    }
+
+    // Fungsi untuk menarik musuh atau objek di sekitar peluru
+    private void ApplyMagnetEffect()
+    {
+        // Mencari semua objek yang berada dalam radius magnet
+        Collider2D[] objectsInRange = Physics2D.OverlapCircleAll(transform.position, magnetRadius);
+        
+        foreach (Collider2D obj in objectsInRange)
+        {
+            // Jika objek adalah musuh dan memiliki Rigidbody2D
+            if (obj.CompareTag("Enemy") )
+            {
+                Rigidbody2D rbObject = obj.GetComponent<Rigidbody2D>();
+                if (rbObject != null)
+                {
+                    // Menghitung arah dorongan ke peluru
+                    Vector2 direction = (transform.position - obj.transform.position).normalized;
+                    rbObject.AddForce(direction * magnetStrength * Time.deltaTime, ForceMode2D.Force);  // Menarik objek ke peluru
+                }
+            }
+        }
+    }
+
     public void SplitBullet()
     {
         // Membuat 3 peluru baru yang meluncur ke arah yang berbeda
@@ -92,4 +148,5 @@ public class Bullet : MonoBehaviour
         yield return new WaitForSeconds(duration);
         transform.localScale /= multiplier;  // Kembali ke ukuran semula
     }
+    
 }

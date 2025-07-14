@@ -14,4 +14,13 @@ public class SceneController : MonoBehaviour
         // Memuat ulang scene yang sama
         SceneManager.LoadScene(currentSceneName);
     }
+    public void StartScene(string sceneName)
+    {
+        SceneManager.LoadScene(sceneName);
+    }
+    public void ExitGame()
+    {
+        Debug.Log("Keluar dari game..."); // Ini hanya muncul saat di editor
+        Application.Quit();
+    }
 }

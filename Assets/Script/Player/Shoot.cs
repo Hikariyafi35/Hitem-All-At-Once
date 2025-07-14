@@ -8,6 +8,7 @@ public class Shoot : MonoBehaviour
     public Transform shootPoint;     // Titik tembak peluru
     public float rotationSpeed = 5f; // Kecepatan rotasi
     public float bulletSpeed = 10f;  // Kecepatan peluru
+    public float lineLength = 10f;   // Panjang garis LineRenderer (bisa diatur di Inspector)
 
     private bool canShoot = true;  // Menandakan apakah tembakan masih diizinkan
     private LineRenderer lineRenderer;  // LineRenderer untuk melacak arah tembakan
@@ -33,6 +34,9 @@ public class Shoot : MonoBehaviour
         lineRenderer.startColor = Color.red;  // Warna garis di awal
         lineRenderer.endColor = Color.red;    // Warna garis di akhir
         lineRenderer.positionCount = 2;  // Jumlah titik garis (start dan end)
+
+        // Menambahkan garis putus-putus menggunakan texture
+        lineRenderer.material.mainTexture = Resources.Load<Texture>("DottedLineTexture");  // Pastikan texture berada di folder Resources
 
         // Menonaktifkan LineRenderer di awal
         lineRenderer.enabled = true;
@@ -95,6 +99,8 @@ public class Shoot : MonoBehaviour
 
         // Hancurkan peluru setelah beberapa detik
         Destroy(bullet, 20f);  // Ubah durasi sesuai kebutuhan
+        
+        SoundManager.instance.PlaySoundEffect("Shoot Cannon");
 
         // Setelah peluru dihancurkan, reset status tembakan agar bisa menembak lagi
         Invoke("ResetShoot", 1f);  // Tunggu 1 detik dan aktifkan kembali tembakan
@@ -108,16 +114,16 @@ public class Shoot : MonoBehaviour
             // Tentukan posisi awal garis (titik tembak)
             lineRenderer.SetPosition(0, shootPoint.position);
 
-            // Tentukan posisi akhir garis (arah tembakan, panjang garis tergantung dari seberapa jauh garis ingin ditampilkan)
-            Vector3 endPosition = shootPoint.position + shootPoint.up * 10f;  // Panjang garis 10 unit (sesuaikan sesuai kebutuhan)
+            // Tentukan posisi akhir garis (arah tembakan, panjang garis sesuai dengan lineLength)
+            Vector3 endPosition = shootPoint.position + shootPoint.up * lineLength;  // Panjang garis diatur oleh lineLength
             lineRenderer.SetPosition(1, endPosition);
         }
     }
 
     // Fungsi untuk mereset tembakan
-    void ResetShoot()
-    {
-        canShoot = true;  // Mengaktifkan kembali tembakan setelah 1 detik
-        lineRenderer.enabled = true;  // Mengaktifkan kembali LineRenderer
-    }
+    // void ResetShoot()
+    // {
+    //     canShoot = true;  // Mengaktifkan kembali tembakan setelah 1 detik
+    //     lineRenderer.enabled = true;  // Mengaktifkan kembali LineRenderer
+    // }
 }

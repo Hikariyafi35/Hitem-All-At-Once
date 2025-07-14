@@ -36,6 +36,7 @@ public class EnemyHealth : MonoBehaviour
 
     void Die()
     {
+        SoundManager.instance.PlaySoundEffect("deathsoundeffect1");
         // Beri tahu GameManager bahwa musuh mati
         gameManager.EnemyDied();
 

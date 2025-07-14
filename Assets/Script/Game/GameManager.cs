@@ -14,6 +14,9 @@ public class GameManager : MonoBehaviour
     private int totalEnemies;  // Jumlah total musuh yang ada
     private int currentEnemies;  // Jumlah musuh yang masih hidup
 
+    public GameObject pauseCanvas; // Canvas untuk pause UI
+    private bool isPaused = false; // Status pause
+
     void Start()
     {
         // Mencari semua musuh di scene dan menghitung total musuh dengan tag "Enemy"
@@ -27,6 +30,37 @@ public class GameManager : MonoBehaviour
 
         // Menampilkan jumlah total musuh di UI
         UpdateEnemyCountText();
+        pauseCanvas.SetActive(false); // Pastikan pause UI disembunyikan di awal
+        Time.timeScale = 1f; // Pastikan game berjalan normal saat mulai
+    }
+    void Update()
+    {
+        // Jika player menekan Escape
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (isPaused)
+            {
+                ResumeGame();
+            }
+            else
+            {
+                PauseGame();
+            }
+        }
+    }
+
+    void PauseGame()
+    {
+        pauseCanvas.SetActive(true);
+        Time.timeScale = 0f; // Menghentikan waktu
+        isPaused = true;
+    }
+
+    public void ResumeGame()
+    {
+        pauseCanvas.SetActive(false);
+        Time.timeScale = 1f; // Lanjutkan waktu
+        isPaused = false;
     }
 
     // Fungsi ini akan dipanggil ketika musuh mati
@@ -50,6 +84,7 @@ public class GameManager : MonoBehaviour
     // Fungsi untuk menampilkan UI Win
     void WinGame()
     {
+        SoundManager.instance.PlaySoundEffect("wineffect");
         winCanvas.SetActive(true);  // Menampilkan Canvas Win
         winText.text = "You Win!";  // Menampilkan teks "You Win"
 
